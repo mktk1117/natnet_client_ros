@@ -1,0 +1,13 @@
+<launch>
+
+  <arg name="config_file"
+       default="$(find natnet_client_ros)/config/config.yaml" />
+
+  <node pkg="natnet_client_ros"
+        type="natnet_client_node.py"
+        name="natnet_client_node"
+        output="screen"
+        >
+    <rosparam file="$(arg config_file)" command="load" />
+  </node>
+</launch>

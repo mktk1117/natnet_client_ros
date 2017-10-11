@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>natnet_client_ros</name>
+  <version>0.0.0</version>
+  <description>The natnet_client_ros package</description>
+
+  <maintainer email="takahiro.miki1992@gmail.com">takahiro</maintainer>
+  <license>MIT</license>
+
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>tf</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+
+</package>
