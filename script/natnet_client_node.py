@@ -28,7 +28,8 @@ class NatnetClientNode:
             self.client = natnet.NatClient(client_ip=self.client_ip, server_ip=self.server_ip,
                 data_port=self.data_port, comm_port=self.comm_port, read_rate=self.read_rate)
         except:
-            rospy.ERROR("Error at connecting")
+            rospy.logerr("Error at connecting to the server. Please check the ip address.")
+            exit()
 
     def read_parameters(self):
         self.client_ip = rospy.get_param("/natnet_client_node/client_ip", '192.168.1.48')
