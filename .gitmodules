@@ -1,0 +1,3 @@
+[submodule "script/natnetclient"]
+	path = script/natnetclient
+	url = https://github.com/ShigiDono/natnetclient.git

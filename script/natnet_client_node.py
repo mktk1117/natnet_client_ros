@@ -10,6 +10,8 @@ http://opensource.org/licenses/mit-license.php
 '''
 
 import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/natnetclient')
 
 import rospy
 import natnetclient as natnet
