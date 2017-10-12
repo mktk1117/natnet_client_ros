@@ -27,8 +27,6 @@ class NatnetClientNode:
                 data_port=self.data_port, comm_port=self.comm_port, read_rate=self.read_rate)
         except:
             rospy.ERROR("Error at connecting")
-        # except Exception as e:
-        #     rospy.ERROR("Error: {}".format(e.message))
 
     def read_parameters(self):
         self.client_ip = rospy.get_param("/natnet_client_node/client_ip", '192.168.1.48')
@@ -59,13 +57,6 @@ class NatnetClientNode:
             pose = Pose()
             pose.position = body.position
             pose.orientation = body.quaternion
-            # pose.position.x = body.position.x
-            # pose.position.y = body.position.y
-            # pose.position.z = body.position.z
-            # pose.orientation.x = body.quaternion.x
-            # pose.orientation.y = body.quaternion.y
-            # pose.orientation.z = body.quaternion.z
-            # pose.orientation.w = body.quaternion.w
             self.pose_publishers[name].publish(pose)
 
             # Publish tf
