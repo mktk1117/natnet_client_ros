@@ -13,11 +13,14 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/natnetclient')
 
+import numpy as np
 import rospy
 import natnetclient as natnet
 
 import tf
 from geometry_msgs.msg import Pose
+from nav_msgs.msg import Odometry
+from velocity_estimate import VelocityEstimate
 
 
 class NatnetClientNode:
@@ -30,6 +33,7 @@ class NatnetClientNode:
         except:
             rospy.logerr("Error at connecting to the server. Please check the ip address.")
             exit()
+        self.velest = VelocityEstimate(self.pose_estimate_n)
 
     def read_parameters(self):
         self.client_ip = rospy.get_param("/natnet_client_node/client_ip", '192.168.1.48')
@@ -39,7 +43,9 @@ class NatnetClientNode:
         self.read_rate = rospy.get_param("/natnet_client_node/read_rate", 1200)
         self.publish_rate = rospy.get_param("/natnet_client_node/publish_rate", 100)
         self.rigid_bodies = rospy.get_param('/natnet_client_node/rigid_bodies', None)
+        self.pose_estimate_n = rospy.get_param('/natnet_client_node/pose_estimate_n', 5)
         self.pose_publishers = {}
+        self.odom_publishers = {}
         if self.rigid_bodies is None:
             rospy.logerr("No rigid_bodies parameters")
             exit()
@@ -48,12 +54,14 @@ class NatnetClientNode:
                 key = self.rigid_bodies[name]
                 pose_topic_name = key['pose']
                 self.pose_publishers[name] = rospy.Publisher(pose_topic_name, Pose, queue_size=0)
+                self.odom_publishers[name] = rospy.Publisher(pose_topic_name + "_odom", Odometry, queue_size=0)
 
     def publish_data(self, e):
         for name in self.rigid_bodies.keys():
             key = self.rigid_bodies[name]
             child_frame_id = key['child_frame_id']
             parent_frame_id = key['parent_frame_id']
+            t = rospy.Time.now()
 
             # Publish pose
             body = self.client.rigid_bodies[name]
@@ -66,9 +74,18 @@ class NatnetClientNode:
             br = tf.TransformBroadcaster()
             br.sendTransform((body.position),
                              body.quaternion,
-                             rospy.Time.now(),
+                             t,
                              child_frame_id,
                              parent_frame_id)
+            x = np.array([pose.position.x, pose.position.y, pose.position.z])
+            v = self.velest.get_velocity(t.to_sec(), x)
+            odom = Odometry()
+            odom.header.stamp = t
+            odom.pose.pose = pose
+            odom.twist.twist.linear.x = v[0]
+            odom.twist.twist.linear.y = v[1]
+            odom.twist.twist.linear.z = v[2]
+            self.odom_publishers[name].publish(odom)
 
         
 def main(args):

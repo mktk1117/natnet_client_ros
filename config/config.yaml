@@ -1,13 +1,13 @@
 rigid_bodies:
-    'marker1':
-        pose: marker1/pose
-        child_frame_id: marker1/base_link
+    'phenox':
+        pose: phenox/pose
+        child_frame_id: phenox/base_link
         parent_frame_id: world
 
-client_ip: 192.168.1.48
+client_ip: 192.168.1.57
 server_ip: 192.168.1.35
 data_port: 1511
 comm_port: 1510
 read_rate: 1200
 publish_rate: 100
-
+pose_estimate_n: 20
